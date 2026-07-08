@@ -1,0 +1,16 @@
+package main
+
+templ Index(todos []*Todo) {
+	@Layout() {
+		@NewButton()
+		if len(todos) == 0 {
+			<p class="empty">まだ TODO はありません。</p>
+		} else {
+			<div class="todos">
+				for _, t := range todos {
+					@TodoRow(t)
+				}
+			</div>
+		}
+	}
+}

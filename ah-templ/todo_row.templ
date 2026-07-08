@@ -1,0 +1,32 @@
+package main
+
+import (
+	"strconv"
+
+	"github.com/kakkky/hotwire-go/turbo"
+)
+
+templ TodoRow(t *Todo) {
+	@turbo.TurboFrame("todo_" + strconv.Itoa(t.ID)) {
+		<div class={ todoClass(t.Done) }>
+			<span class="title">{ t.Title }</span>
+			<div class="actions">
+				<a href={ "/todos/" + strconv.Itoa(t.ID) + "/edit" }>編集</a>
+				<a
+					class="danger"
+					href={ "/todos/" + strconv.Itoa(t.ID) }
+					{ turbo.AttrFrame("_top")... }
+					{ turbo.AttrMethodDelete()... }
+					{ turbo.AttrConfirm("本当に削除しますか？")... }
+				>削除</a>
+			</div>
+		</div>
+	}
+}
+
+func todoClass(done bool) string {
+	if done {
+		return "todo done"
+	}
+	return "todo"
+}

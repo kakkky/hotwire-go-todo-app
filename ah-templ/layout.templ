@@ -1,0 +1,59 @@
+package main
+
+import "github.com/kakkky/hotwire-go/turbo"
+
+const stylesHTML = `<style>
+body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+header { display: flex; align-items: baseline; justify-content: space-between; }
+header a { text-decoration: none; color: inherit; }
+h1 { margin: 0; font-size: 1.5rem; }
+turbo-frame { display: block; }
+.todos { display: flex; flex-direction: column; }
+.todos .todo { display: flex; align-items: center; gap: .75rem; padding: .5rem 0; border-bottom: 1px solid #eee; }
+.todos .todo .title { flex: 1; }
+.todos .todo.done .title { text-decoration: line-through; color: #888; }
+.actions { display: flex; gap: .5rem; }
+.actions a, .btn { font-size: .875rem; padding: .25rem .5rem; border-radius: 4px; border: 1px solid #ccc; background: #fafafa; color: #222; text-decoration: none; cursor: pointer; }
+.actions a.danger, .btn.danger { border-color: #d33; color: #d33; }
+form.stack { display: flex; flex-direction: column; gap: .75rem; }
+form.stack input[type=text] { padding: .5rem; font-size: 1rem; }
+.error { color: #d33; margin: 0; }
+.empty { color: #888; }
+.top-actions { margin: 1rem 0; }
+footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; color: #888; }
+footer a { color: inherit; }
+</style>`
+
+templ Layout() {
+	<!DOCTYPE html>
+	<html lang="ja">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			@turbo.MetaViewTransition()
+			<title>hotwire-go TODO example</title>
+			@turbo.ScriptImport()
+			@templ.Raw(stylesHTML)
+		</head>
+		<body>
+			@header()
+			<main>
+				{ children... }
+			</main>
+			@footer()
+		</body>
+	</html>
+}
+
+templ header() {
+	<header>
+		<a href="/todos"><h1>TODOs</h1></a>
+		<small>hotwire-go example</small>
+	</header>
+}
+
+templ footer() {
+	<footer>
+		<small><a href="https://github.com/kakkky/hotwire-go">hotwire-go</a> example</small>
+	</footer>
+}

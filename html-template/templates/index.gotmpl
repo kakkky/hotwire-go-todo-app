@@ -1,0 +1,13 @@
+{{ define "content" }}
+    {{ template "new_button" . }}
+
+    {{ if .Todos }}
+        <div class="todos">
+        {{ range .Todos }}
+            {{ template "todo_row" . }}
+        {{ end }}
+        </div>
+    {{ else }}
+        <p class="empty">まだ TODO はありません。</p>
+    {{ end }}
+{{ end }}

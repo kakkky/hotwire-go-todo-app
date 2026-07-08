@@ -1,0 +1,17 @@
+{{ define "new_form" }}
+    {{ turboFrame "new_todo" }}
+        {{ if .Error }}
+            <p class="error">{{ .Error }}</p>
+        {{ end }}
+        <form class="stack" action="/todos" method="post" {{ turboAttrFrame "_top" }}>
+            <label>
+                タイトル
+                <input type="text" name="title" value="{{ .Title }}" autofocus>
+            </label>
+            <div class="actions">
+                <button class="btn" type="submit" {{ turboAttrSubmitsWith "作成中..." }}>作成</button>
+                <a class="btn" href="/todos">キャンセル</a>
+            </div>
+        </form>
+    {{ turboFrameEnd }}
+{{ end }}

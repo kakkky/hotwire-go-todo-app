@@ -1,0 +1,8 @@
+package main
+
+templ Edit(todo *Todo, errorMsg string) {
+	@Layout() {
+		<h2>TODO を編集</h2>
+		@TodoEdit(todo, errorMsg)
+	}
+}

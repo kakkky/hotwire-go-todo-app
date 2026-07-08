@@ -1,0 +1,8 @@
+package main
+
+templ New(title, errorMsg string) {
+	@Layout() {
+		<h2>新しい TODO</h2>
+		@NewForm(title, errorMsg)
+	}
+}

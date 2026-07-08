@@ -1,0 +1,21 @@
+package main
+
+import "github.com/kakkky/hotwire-go/turbo"
+
+templ NewForm(title, errorMsg string) {
+	@turbo.TurboFrame("new_todo") {
+		if errorMsg != "" {
+			<p class="error">{ errorMsg }</p>
+		}
+		<form class="stack" action="/todos" method="post" { turbo.AttrFrame("_top")... }>
+			<label>
+				タイトル
+				<input type="text" name="title" value={ title } autofocus/>
+			</label>
+			<div class="actions">
+				<button class="btn" type="submit" { turbo.AttrSubmitsWith("作成中...")... }>作成</button>
+				<a class="btn" href="/todos">キャンセル</a>
+			</div>
+		</form>
+	}
+}

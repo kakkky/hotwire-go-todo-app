@@ -1,0 +1,29 @@
+package main
+
+import (
+	"strconv"
+
+	"github.com/kakkky/hotwire-go/turbo"
+)
+
+templ TodoEdit(t *Todo, errorMsg string) {
+	@turbo.TurboFrame("todo_" + strconv.Itoa(t.ID)) {
+		if errorMsg != "" {
+			<p class="error">{ errorMsg }</p>
+		}
+		<form class="stack" action={ "/todos/" + strconv.Itoa(t.ID) } method="post">
+			<label>
+				タイトル
+				<input type="text" name="title" value={ t.Title } autofocus/>
+			</label>
+			<label>
+				<input type="checkbox" name="done" checked?={ t.Done }/>
+				完了
+			</label>
+			<div class="actions">
+				<button class="btn" type="submit" { turbo.AttrSubmitsWith("保存中...")... }>保存</button>
+				<a class="btn" href="/todos">キャンセル</a>
+			</div>
+		</form>
+	}
+}

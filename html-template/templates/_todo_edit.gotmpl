@@ -1,0 +1,21 @@
+{{ define "todo_edit" }}
+    {{ turboFrame (printf "todo_%d" .Todo.ID) }}
+        {{ if .Error }}
+            <p class="error">{{ .Error }}</p>
+        {{ end }}
+        <form class="stack" action="/todos/{{ .Todo.ID }}" method="post">
+            <label>
+                タイトル
+                <input type="text" name="title" value="{{ .Todo.Title }}" autofocus>
+            </label>
+            <label>
+                <input type="checkbox" name="done" {{ if .Todo.Done }}checked{{ end }}>
+                完了
+            </label>
+            <div class="actions">
+                <button class="btn" type="submit" {{ turboAttrSubmitsWith "保存中..." }}>保存</button>
+                <a class="btn" href="/todos">キャンセル</a>
+            </div>
+        </form>
+    {{ turboFrameEnd }}
+{{ end }}

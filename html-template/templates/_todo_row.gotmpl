@@ -1,0 +1,15 @@
+{{ define "todo_row" }}
+    {{ turboFrame (printf "todo_%d" .ID) }}
+        <div class="todo{{ if .Done }} done{{ end }}">
+            <span class="title">{{ .Title }}</span>
+            <div class="actions">
+                <a href="/todos/{{ .ID }}/edit">編集</a>
+                <a class="danger"
+                    href="/todos/{{ .ID }}"
+                    {{ turboAttrFrame "_top" }}
+                    {{ turboAttrMethodDelete }}
+                    {{ turboAttrConfirm "本当に削除しますか？" }}>削除</a>
+            </div>
+        </div>
+    {{ turboFrameEnd }}
+{{ end }}
