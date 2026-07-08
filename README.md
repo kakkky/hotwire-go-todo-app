@@ -13,9 +13,12 @@
 # html/template 版
 go run ./html-template
 
-# a-h/templ 版
+# a-h/templ 版 (先に templ generate が必要)
+go run github.com/a-h/templ/cmd/templ@v0.3.1020 generate -path ./ah-templ
 go run ./ah-templ
 ```
+
+`ah-templ/` の `*_templ.go` は生成物なので gitignore しています。
 
 いずれも `http://localhost:8080` で listen する。
 

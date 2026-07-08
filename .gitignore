@@ -1,3 +1,6 @@
 # Editor / OS
 .DS_Store
 *.swp
+
+# templ generated
+*_templ.go
