@@ -14,6 +14,8 @@ github.com/kakkky/hotwire-go v0.0.0-20260710190549-c77868e1e627 h1:tAvfgWs7st0dE
 github.com/kakkky/hotwire-go v0.0.0-20260710190549-c77868e1e627/go.mod h1:kfHzCBupODXS0/U5uxUiOkFWke0Yt4vP9ax9IpS/2DQ=
 github.com/kakkky/hotwire-go v0.0.0-20260711070748-cab432f9836e h1:pyEV7lweGRwYMCbSyuFuTICcUe3aMzEQ8komZmt3PM4=
 github.com/kakkky/hotwire-go v0.0.0-20260711070748-cab432f9836e/go.mod h1:uKIvgQ/2ve36ynysFdai4g/Z5egEyWoFiYuN4hiXN7g=
+github.com/kakkky/hotwire-go v0.0.0-20260711192857-7cf55b327ae4 h1:FXQZciyUaoaEqzMVMO9gnVFN1vd9XyzHRpJ3JPTZhVg=
+github.com/kakkky/hotwire-go v0.0.0-20260711192857-7cf55b327ae4/go.mod h1:uKIvgQ/2ve36ynysFdai4g/Z5egEyWoFiYuN4hiXN7g=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/redis/go-redis/v9 v9.21.0 h1:FPBE4hhbAke+TLmcY3WkpbDffJEomdqPn3HYiqAtL9E=
