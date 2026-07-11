@@ -3,7 +3,7 @@ package main
 import "github.com/kakkky/hotwire-go/turbo"
 
 templ NewButton() {
-	@turbo.TurboFrame("new_todo") {
+	@turbo.Frame("new_todo") {
 		<div class="top-actions">
 			<a class="btn" href="/todos/new">+ 新しい TODO</a>
 		</div>

@@ -3,7 +3,7 @@ package main
 import "github.com/kakkky/hotwire-go/turbo"
 
 templ NewForm(title, errorMsg string) {
-	@turbo.TurboFrame("new_todo") {
+	@turbo.Frame("new_todo") {
 		if errorMsg != "" {
 			<p class="error">{ errorMsg }</p>
 		}

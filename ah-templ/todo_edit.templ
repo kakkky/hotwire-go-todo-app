@@ -7,7 +7,7 @@ import (
 )
 
 templ TodoEdit(t *Todo, errorMsg string) {
-	@turbo.TurboFrame("todo_" + strconv.Itoa(t.ID)) {
+	@turbo.Frame("todo_" + strconv.Itoa(t.ID)) {
 		if errorMsg != "" {
 			<p class="error">{ errorMsg }</p>
 		}
