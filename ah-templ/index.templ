@@ -3,14 +3,14 @@ package main
 templ Index(todos []*Todo) {
 	@Layout() {
 		@NewButton()
-		if len(todos) == 0 {
-			<p class="empty">まだ TODO はありません。</p>
-		} else {
-			<div class="todos">
+		<div class="todos" id="todos">
+			if len(todos) == 0 {
+				<p class="empty">まだ TODO はありません。</p>
+			} else {
 				for _, t := range todos {
 					@TodoRow(t)
 				}
-			</div>
-		}
+			}
+		</div>
 	}
 }

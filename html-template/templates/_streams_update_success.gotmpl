@@ -1,0 +1,5 @@
+{{ define "streams_update_success" }}
+    {{ turboStreamReplace (printf "todo_%d" .Todo.ID) }}
+        {{ template "todo_row" .Todo }}
+    {{ turboStreamEnd }}
+{{ end }}

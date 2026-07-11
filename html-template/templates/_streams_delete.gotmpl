@@ -1,0 +1,4 @@
+{{ define "streams_delete" }}
+    {{ turboStreamRemove (printf "todo_%d" .ID) }}
+    {{ turboStreamEnd }}
+{{ end }}

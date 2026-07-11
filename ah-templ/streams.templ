@@ -1,0 +1,38 @@
+package main
+
+import (
+	"strconv"
+
+	"github.com/kakkky/hotwire-go/turbo"
+)
+
+templ CreateSuccessStreams(t *Todo) {
+	@turbo.StreamAppend("todos") {
+		@TodoRow(t)
+	}
+	@turbo.StreamReplace("new_todo") {
+		@NewButton()
+	}
+}
+
+templ CreateFailStreams(title, errorMsg string) {
+	@turbo.StreamReplace("new_todo") {
+		@NewForm(title, errorMsg)
+	}
+}
+
+templ UpdateSuccessStreams(t *Todo) {
+	@turbo.StreamReplace("todo_" + strconv.Itoa(t.ID)) {
+		@TodoRow(t)
+	}
+}
+
+templ UpdateFailStreams(t *Todo, errorMsg string) {
+	@turbo.StreamReplace("todo_" + strconv.Itoa(t.ID)) {
+		@TodoEdit(t, errorMsg)
+	}
+}
+
+templ DeleteStreams(id int) {
+	@turbo.StreamRemove("todo_" + strconv.Itoa(id))
+}
