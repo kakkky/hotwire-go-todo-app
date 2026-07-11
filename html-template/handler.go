@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -37,18 +38,26 @@ func (s *server) root(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) index(w http.ResponseWriter, r *http.Request) {
-	s.view.Render(w, http.StatusOK, "index", map[string]any{
-		"Todos": s.store.list(),
-	})
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if err := s.view.Page("index", map[string]any{"Todos": s.store.list()}).Render(r.Context(), w); err != nil {
+		log.Printf("index: %v", err)
+	}
 }
 
 func (s *server) new(w http.ResponseWriter, r *http.Request) {
 	data := map[string]any{}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	if turbo.IsFrameRequest(r) {
-		s.view.RenderPartial(w, http.StatusOK, "new_form", data)
+		if err := s.view.Partial("new_form", data).Render(r.Context(), w); err != nil {
+			log.Printf("new: %v", err)
+		}
 		return
 	}
-	s.view.Render(w, http.StatusOK, "new", data)
+	if err := s.view.Page("new", data).Render(r.Context(), w); err != nil {
+		log.Printf("new: %v", err)
+	}
 }
 
 func (s *server) create(w http.ResponseWriter, r *http.Request) {
@@ -62,14 +71,36 @@ func (s *server) create(w http.ResponseWriter, r *http.Request) {
 			"Error": "タイトルを入力してください",
 			"Title": title,
 		}
-		if turbo.IsFrameRequest(r) {
-			s.view.RenderPartial(w, http.StatusUnprocessableEntity, "new_form", data)
+		if turbo.IsStreamRequest(r) {
+			turbo.StreamHeader(w)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			if err := s.view.Partial("streams_create_fail", data).Render(r.Context(), w); err != nil {
+				log.Printf("create: %v", err)
+			}
 			return
 		}
-		s.view.Render(w, http.StatusUnprocessableEntity, "new", data)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		if turbo.IsFrameRequest(r) {
+			if err := s.view.Partial("new_form", data).Render(r.Context(), w); err != nil {
+				log.Printf("create: %v", err)
+			}
+			return
+		}
+		if err := s.view.Page("new", data).Render(r.Context(), w); err != nil {
+			log.Printf("create: %v", err)
+		}
 		return
 	}
-	s.store.create(title)
+	t := s.store.create(title)
+	if turbo.IsStreamRequest(r) {
+		turbo.StreamHeader(w)
+		w.WriteHeader(http.StatusOK)
+		if err := s.view.Partial("streams_create_success", map[string]any{"Todo": t}).Render(r.Context(), w); err != nil {
+			log.Printf("create: %v", err)
+		}
+		return
+	}
 	turbo.Redirect(w, r, "/todos")
 }
 
@@ -85,11 +116,17 @@ func (s *server) edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := map[string]any{"Todo": t}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
 	if turbo.IsFrameRequest(r) {
-		s.view.RenderPartial(w, http.StatusOK, "todo_edit", data)
+		if err := s.view.Partial("todo_edit", data).Render(r.Context(), w); err != nil {
+			log.Printf("edit: %v", err)
+		}
 		return
 	}
-	s.view.Render(w, http.StatusOK, "edit", data)
+	if err := s.view.Page("edit", data).Render(r.Context(), w); err != nil {
+		log.Printf("edit: %v", err)
+	}
 }
 
 func (s *server) update(w http.ResponseWriter, r *http.Request) {
@@ -110,15 +147,38 @@ func (s *server) update(w http.ResponseWriter, r *http.Request) {
 			"Todo":  &Todo{ID: id, Title: title, Done: done},
 			"Error": "タイトルを入力してください",
 		}
-		if turbo.IsFrameRequest(r) {
-			s.view.RenderPartial(w, http.StatusUnprocessableEntity, "todo_edit", data)
+		if turbo.IsStreamRequest(r) {
+			turbo.StreamHeader(w)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			if err := s.view.Partial("streams_update_fail", data).Render(r.Context(), w); err != nil {
+				log.Printf("update: %v", err)
+			}
 			return
 		}
-		s.view.Render(w, http.StatusUnprocessableEntity, "edit", data)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		if turbo.IsFrameRequest(r) {
+			if err := s.view.Partial("todo_edit", data).Render(r.Context(), w); err != nil {
+				log.Printf("update: %v", err)
+			}
+			return
+		}
+		if err := s.view.Page("edit", data).Render(r.Context(), w); err != nil {
+			log.Printf("update: %v", err)
+		}
 		return
 	}
 	if err := s.store.update(id, title, done); err != nil {
 		http.NotFound(w, r)
+		return
+	}
+	if turbo.IsStreamRequest(r) {
+		t, _ := s.store.get(id)
+		turbo.StreamHeader(w)
+		w.WriteHeader(http.StatusOK)
+		if err := s.view.Partial("streams_update_success", map[string]any{"Todo": t}).Render(r.Context(), w); err != nil {
+			log.Printf("update: %v", err)
+		}
 		return
 	}
 	turbo.Redirect(w, r, "/todos")
@@ -131,5 +191,13 @@ func (s *server) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.store.delete(id)
+	if turbo.IsStreamRequest(r) {
+		turbo.StreamHeader(w)
+		w.WriteHeader(http.StatusOK)
+		if err := s.view.Partial("streams_delete", map[string]any{"ID": id}).Render(r.Context(), w); err != nil {
+			log.Printf("delete: %v", err)
+		}
+		return
+	}
 	turbo.Redirect(w, r, "/todos")
 }
