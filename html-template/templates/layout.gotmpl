@@ -29,6 +29,7 @@
     </style>
   </head>
   <body>
+    {{ turboStreamSourceSSE "todos" }}
     {{ template "header" . }}
     <main>{{ block "content" . }}{{ end }}</main>
     {{ template "footer" . }}

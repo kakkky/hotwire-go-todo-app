@@ -18,12 +18,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	sb := turbo.NewStreamBroker()
 	s := &server{
-		view:  r,
-		store: newStore(),
+		view:   r,
+		store:  newStore(),
+		broker: sb,
 	}
 
 	mux := http.NewServeMux()
+	mux.Handle(turbo.StreamsSSEPath, turbo.StreamSSEHandler(sb))
 	s.routes(mux)
 
 	addr := ":8080"

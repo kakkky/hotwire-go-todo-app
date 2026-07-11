@@ -3,12 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/kakkky/hotwire-go/turbo"
 )
 
 func main() {
-	s := &server{store: newStore()}
+	sb := turbo.NewStreamBroker()
+	s := &server{store: newStore(), broker: sb}
 
 	mux := http.NewServeMux()
+	mux.Handle(turbo.StreamsSSEPath, turbo.StreamSSEHandler(sb))
 	s.routes(mux)
 
 	addr := ":8080"

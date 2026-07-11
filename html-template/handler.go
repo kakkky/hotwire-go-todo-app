@@ -11,8 +11,9 @@ import (
 )
 
 type server struct {
-	view  *view.Renderer
-	store *store
+	view   *view.Renderer
+	store  *store
+	broker turbo.StreamBroker
 }
 
 func (s *server) routes(mux *http.ServeMux) {
@@ -93,12 +94,12 @@ func (s *server) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := s.store.create(title)
+	if err := turbo.Broadcast(r.Context(), s.broker, "todos", s.view.Partial("streams_create_success", map[string]any{"Todo": t})); err != nil {
+		log.Printf("create: broadcast: %v", err)
+	}
 	if turbo.IsStreamRequest(r) {
 		turbo.StreamHeader(w)
 		w.WriteHeader(http.StatusOK)
-		if err := s.view.Partial("streams_create_success", map[string]any{"Todo": t}).Render(r.Context(), w); err != nil {
-			log.Printf("create: %v", err)
-		}
 		return
 	}
 	turbo.Redirect(w, r, "/todos")
@@ -172,13 +173,13 @@ func (s *server) update(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	t, _ := s.store.get(id)
+	if err := turbo.Broadcast(r.Context(), s.broker, "todos", s.view.Partial("streams_update_success", map[string]any{"Todo": t})); err != nil {
+		log.Printf("update: broadcast: %v", err)
+	}
 	if turbo.IsStreamRequest(r) {
-		t, _ := s.store.get(id)
 		turbo.StreamHeader(w)
 		w.WriteHeader(http.StatusOK)
-		if err := s.view.Partial("streams_update_success", map[string]any{"Todo": t}).Render(r.Context(), w); err != nil {
-			log.Printf("update: %v", err)
-		}
 		return
 	}
 	turbo.Redirect(w, r, "/todos")
@@ -191,12 +192,12 @@ func (s *server) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.store.delete(id)
+	if err := turbo.Broadcast(r.Context(), s.broker, "todos", s.view.Partial("streams_delete", map[string]any{"ID": id})); err != nil {
+		log.Printf("delete: broadcast: %v", err)
+	}
 	if turbo.IsStreamRequest(r) {
 		turbo.StreamHeader(w)
 		w.WriteHeader(http.StatusOK)
-		if err := s.view.Partial("streams_delete", map[string]any{"ID": id}).Render(r.Context(), w); err != nil {
-			log.Printf("delete: %v", err)
-		}
 		return
 	}
 	turbo.Redirect(w, r, "/todos")
