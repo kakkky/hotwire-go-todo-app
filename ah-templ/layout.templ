@@ -36,7 +36,7 @@ templ Layout() {
 			@templ.Raw(stylesHTML)
 		</head>
 		<body>
-			@turbo.StreamSourceSSE("todos")
+			@turbo.StreamSourceSSE(ctx, "todos")
 			@header()
 			<main>
 				{ children... }

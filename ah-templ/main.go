@@ -13,7 +13,10 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle(turbo.StreamsSSEPath, turbo.StreamSSEHandler(sb))
-	s.routes(mux)
+
+	pageMux := http.NewServeMux()
+	s.routes(pageMux)
+	mux.Handle("/", turbo.StreamsMiddleware(pageMux))
 
 	addr := ":8080"
 	log.Printf("listening on http://localhost%s", addr)
