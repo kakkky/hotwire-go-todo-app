@@ -29,7 +29,7 @@
     </style>
   </head>
   <body>
-    {{ turboStreamSourceSSE "todos" }}
+    {{ turboStreamSourceSSE .Ctx "todos" }}
     {{ template "header" . }}
     <main>{{ block "content" . }}{{ end }}</main>
     {{ template "footer" . }}
