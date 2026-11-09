@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/a-h/templ v0.3.1020
-	github.com/kakkky/hotwire-go v0.0.0-20260718193357-012df6ceb1bc
+	github.com/kakkky/hotwire-go v0.3.0
 )
 
 require (
